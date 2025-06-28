@@ -17,6 +17,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
@@ -75,18 +76,23 @@ class HomeFragment : Fragment() {
         homeViewModel.loadPhotos(query)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             homeViewModel.photos.collect { list ->
-                adapter.appendList(list.takeLast(10))
+                adapter.appendList(list.takeLast(30))
             }
         }
 
         adapter.setOnItemClickListener(object : PhotoAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                val photo = homeViewModel.photos.value[position]
-                Toast.makeText(
-                    requireContext(),
-                    "Нажато фото: ${photo.photographer}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val photo = adapter.getItem(position)
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Нажато фото: ${photo.photographer}",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+                val bundle = Bundle().apply {
+                    putParcelable("photo", photo)
+                }
+                findNavController().navigate(R.id.action_HomeFragment_to_DetailsFragment, bundle)
+
             }
         })
         searchView.background = ContextCompat.getDrawable(requireContext(), R.drawable.searchview_background)

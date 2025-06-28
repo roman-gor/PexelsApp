@@ -50,6 +50,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
     override fun getItemCount(): Int = photoList.size
 
+    fun getItem(position: Int): Photo = photoList[position]
+
     class PhotoViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
         private val photoImageView: ImageView = itemView.findViewById<ImageView>(R.id.imageView)
 

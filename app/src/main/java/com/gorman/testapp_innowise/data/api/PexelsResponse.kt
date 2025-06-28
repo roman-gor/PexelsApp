@@ -1,13 +1,18 @@
 package com.gorman.testapp_innowise.data.api
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class PexelsResponse(
     val total_results: Int,
     val page: Int,
     val per_page: Int,
     val photos: List<Photo>,
     val next_page: String?
-)
+) : Parcelable
 
+@Parcelize
 data class Photo(
     val id: Int,
     val width: Int,
@@ -20,8 +25,9 @@ data class Photo(
     val src: Src,
     val liked: Boolean,
     val alt: String
-)
+) : Parcelable
 
+@Parcelize
 data class Src(
     val original: String,
     val large2x: String,
@@ -31,4 +37,4 @@ data class Src(
     val portrait: String,
     val landscape: String,
     val tiny: String
-)
+) : Parcelable
