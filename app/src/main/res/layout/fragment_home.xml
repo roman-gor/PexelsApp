@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="20dp"
+        android:closeIcon="@drawable/close_icon"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/searchDefaultText"
+        android:searchHintIcon="@drawable/search_icon"
+        android:searchIcon="@drawable/search_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/titlesMenu"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:layout_marginTop="12dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Ice"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/choose"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Watches"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Drawing"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Ice"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Watchers"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Drawing"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+
+            <Space
+                android:layout_width="15dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/mulish_semibold"
+                android:minWidth="0dp"
+                android:text="Guitar"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                app:backgroundTint="@color/main"
+                app:backgroundTintMode="add"
+                app:cornerRadius="20dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/picturesView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titlesMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:clipToPadding="false"
+        android:paddingBottom="72dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

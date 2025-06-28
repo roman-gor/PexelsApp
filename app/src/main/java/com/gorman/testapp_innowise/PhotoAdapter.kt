@@ -1,0 +1,73 @@
+package com.gorman.testapp_innowise
+
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.gorman.testapp_innowise.data.api.Photo
+
+class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+
+    private val photoList = mutableListOf<Photo>()
+    private var listener: OnItemClickListener? = null
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun appendList(list: List<Photo>)
+    {
+        val start = photoList.size
+        photoList.addAll(list)
+        notifyItemRangeChanged(start, list.size)
+    }
+
+    fun clearList()
+    {
+        photoList.clear()
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): PhotoViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_photo, parent, false)
+        return PhotoViewHolder(view, listener)
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: com.gorman.testapp_innowise.PhotoAdapter.OnItemClickListener?) {
+        this.listener = listener
+    }
+
+    override fun onBindViewHolder(holder: PhotoAdapter.PhotoViewHolder, position: Int) {
+        holder.bind(photoList[position])
+    }
+
+    override fun getItemCount(): Int = photoList.size
+
+    class PhotoViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
+        private val photoImageView: ImageView = itemView.findViewById<ImageView>(R.id.imageView)
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener?.onItemClick(position)
+                }
+            }
+        }
+
+        fun bind(photo: Photo) {
+            Glide.with(itemView.context)
+                .load(photo.src.large)
+                .placeholder(R.drawable.img_placeholder)
+                .error(R.drawable.img_placeholder)
+                .into(photoImageView)
+        }
+    }
+}
