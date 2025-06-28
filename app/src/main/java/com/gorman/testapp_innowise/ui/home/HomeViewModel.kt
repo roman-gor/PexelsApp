@@ -3,6 +3,7 @@ package com.gorman.testapp_innowise.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gorman.testapp_innowise.data.api.CollectionItem
 import com.gorman.testapp_innowise.data.api.Photo
 import com.gorman.testapp_innowise.data.repository.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,11 +21,15 @@ class HomeViewModel @Inject constructor(
     private val _photos = MutableStateFlow<List<Photo>>(emptyList())
     val photos: StateFlow<List<Photo>> = _photos.asStateFlow()
 
+    private val _collections = MutableStateFlow<List<CollectionItem>>(emptyList())
+    val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
+
     private var current_page = 1
     private var isLoading = false
     private var allLoading = false
 
-    fun loadNextPage(query: String) {
+    fun loadNextPage(query: String)
+    {
         if (isLoading || allLoading) return
         isLoading = true
         viewModelScope.launch {
@@ -43,15 +48,17 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    fun refresh(query: String) {
+
+    fun refresh(query: String)
+    {
         current_page = 1
         allLoading = false
         _photos.value = emptyList()
         loadNextPage(query)
     }
 
-
-    fun loadPhotos(query: String) {
+    fun loadPhotos(query: String)
+    {
         viewModelScope.launch {
             try {
                 current_page = 1
@@ -64,6 +71,60 @@ class HomeViewModel @Inject constructor(
                 Log.d("HomeViewModel", "Результат: ${result.size} коллекций")
                 _photos.value = result
             } catch (e: Exception) {
+                Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
+            }
+        }
+    }
+
+    fun loadCuratedPhotos()
+    {
+        viewModelScope.launch {
+            try {
+                current_page = 1
+                isLoading = false
+                allLoading = false
+                _photos.value = emptyList()
+                loadNextCuratedPhotos()
+                Log.d("HomeViewModel", "Запрос отправлен")
+                val result = repository.searchCurated()
+                Log.d("HomeViewModel", "Результат: ${result.size} коллекций")
+                _photos.value = result
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
+            }
+        }
+    }
+
+    fun loadNextCuratedPhotos()
+    {
+        if (isLoading || allLoading) return
+        isLoading = true
+        viewModelScope.launch {
+            try {
+                val result = repository.searchCurated(page = current_page)
+                if (result.isEmpty()) {
+                    allLoading = true
+                } else {
+                    current_page++
+                    _photos.value += result
+                }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun loadFeatureCollections()
+    {
+        viewModelScope.launch {
+            try {
+                _collections.value = emptyList()
+                val result = repository.searchFeaturedCollections()
+                _collections.value = result
+            }
+            catch (e: Exception) {
                 Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
             }
         }

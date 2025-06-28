@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,9 +37,11 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var adapter = PhotoAdapter()
-    private var query: String = "popular"
+    private var query: String = ""
+    private var collectionList: List<CollectionItem>? = null
+    private var isNew = false
 
-    @SuppressLint("DiscouragedApi")
+    @SuppressLint("DiscouragedApi", "ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +54,16 @@ class HomeFragment : Fragment() {
 
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         val searchView = binding.searchView
-
+        val title1: MaterialButton = binding.title1
+        val titlesList: List<MaterialButton> = listOf(
+            binding.title1,
+            binding.title2,
+            binding.title3,
+            binding.title4,
+            binding.title5,
+            binding.title6,
+            binding.title7
+        )
         binding.picturesView.adapter = adapter
 
         binding.picturesView.layoutManager = layoutManager
@@ -66,28 +78,67 @@ class HomeFragment : Fragment() {
                 val lastVisibleItemPosition = lastVisibleItemPositions.maxOrNull() ?: 0
 
                 if (visibleItemCount + lastVisibleItemPosition >= totalItemCount && dy > 0) {
-                    homeViewModel.loadNextPage(query)
+                    if (query.isEmpty())
+                        homeViewModel.loadNextCuratedPhotos()
+                    else
+                        homeViewModel.loadNextPage(query)
                 }
             }
         })
 
-        homeViewModel.loadNextPage(query)
-        val title1: MaterialButton = binding.title1
-        homeViewModel.loadPhotos(query)
+        if (homeViewModel.collections.value.isEmpty()) {
+            homeViewModel.loadFeatureCollections()
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.photos.collect { list ->
-                adapter.appendList(list.takeLast(30))
+            homeViewModel.collections.collect { list ->
+                collectionList = list.toList()
+                if (!collectionList.isNullOrEmpty() && collectionList!!.size > 1) {
+                    Log.d("Collections", collectionList!![1].title)
+                    title1.text = collectionList!![1].title
+                    for (i in 0 until 7) {
+                        titlesList[i].text = collectionList!![i].title
+                    }
+                } else {
+                    Log.d("Collections", "Список пустой или недостаточно элементов")
+                }
+            }
+        }
+        for (title in titlesList)
+        {
+            title.setOnClickListener {
+                for (btn in titlesList)
+                {
+                    btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                    btn.backgroundTintList = ContextCompat.getColorStateList(context, R.color.main)
+                }
+                searchView.setQuery(title.text.toString(), true)
+                title.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                title.backgroundTintList = ContextCompat.getColorStateList(context, R.color.choose)
             }
         }
 
+        if (query.isEmpty())
+        {
+            homeViewModel.loadCuratedPhotos()
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                homeViewModel.photos.collect { list ->
+                    adapter.appendList(list.takeLast(30))
+                }
+            }
+        }
+        else
+        {
+            homeViewModel.loadPhotos(query)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                homeViewModel.photos.collect { list ->
+                    adapter.appendList(list.takeLast(30))
+                }
+            }
+        }
         adapter.setOnItemClickListener(object : PhotoAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val photo = adapter.getItem(position)
-//                Toast.makeText(
-//                    requireContext(),
-//                    "Нажато фото: ${photo.photographer}",
-//                    Toast.LENGTH_SHORT
-//                ).show()
                 val bundle = Bundle().apply {
                     putParcelable("photo", photo)
                 }
@@ -109,21 +160,26 @@ class HomeFragment : Fragment() {
         underlineView.background = null
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextChange(p0: String?): Boolean {
+            override fun onQueryTextChange(p0: String): Boolean {
+                if (p0.isBlank() && isNew) {
+                    query = ""
+                    isNew = false
+                    adapter.clearList()
+                    Log.d("Query", query)
+                    homeViewModel.loadCuratedPhotos()
+                }
                 return true
             }
 
             override fun onQueryTextSubmit(searchQuery: String): Boolean {
-                query = searchQuery
-                if (!query.isNullOrBlank()) {
-                    Toast.makeText(context, "Поиск: $query", Toast.LENGTH_SHORT).show()
-                }
+                query = searchQuery.trim().orEmpty()
                 adapter.clearList()
+                isNew = true
                 homeViewModel.loadPhotos(searchQuery)
-                homeViewModel.loadNextPage(searchQuery)
                 return true
             }
         })
+        searchView.clearFocus()
 
         val root: View = binding.root
         return root

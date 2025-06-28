@@ -12,6 +12,10 @@ class PhotoRepository @Inject constructor(
         return api.searchPhotos(query = query, page = page, perPage = perPage).photos
     }
 
+    suspend fun searchCurated(page: Int = 1, perPage: Int = 30): List<Photo> {
+        return api.searchCuratedPhotos(page = page, perPage = perPage).photos
+    }
+
     suspend fun searchFeaturedCollections(): List<CollectionItem> {
         return api.searchFeaturedCollections().collections
     }

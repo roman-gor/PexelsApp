@@ -5,16 +5,16 @@ data class CollectionsResponse(
     val per_page: Int,
     val total_results: Int,
     val collections: List<CollectionItem>,
-    val next_page: String?
+    val next_page: String?,
+    val prev_page: String?
 )
 
 data class CollectionItem(
-    val id: Int,
+    val id: String,
     val title: String,
     val description: String?,
     val private: Boolean,
     val media_count: Int,
     val photos_count: Int,
-    val videos_count: Int,
-    val thumbnail: Src?
+    val videos_count: Int
 )

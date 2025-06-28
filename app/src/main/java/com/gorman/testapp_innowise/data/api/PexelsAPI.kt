@@ -6,6 +6,12 @@ import retrofit2.http.Headers
 
 interface PexelsAPI {
 
+    @GET("v1/curated")
+    suspend fun searchCuratedPhotos(
+        @Query("per_page") perPage: Int = 30,
+        @Query("page") page: Int = 1
+    ): PexelsResponse
+
     @GET("v1/search")
     suspend fun searchPhotos(
         @Query("query") query: String,
