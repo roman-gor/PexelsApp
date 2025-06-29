@@ -22,8 +22,11 @@ import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.data.api.CollectionItem
 import com.gorman.testapp_innowise.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.observeOn
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @Suppress("DEPRECATION")
@@ -36,6 +39,7 @@ class HomeFragment : Fragment() {
     private var collectionList: List<CollectionItem>? = null
     private var isNew = false
     private var shouldHandleQueryChange = true
+    private var searchJob: Job? = null
 
     @SuppressLint("DiscouragedApi", "ResourceAsColor")
     override fun onCreateView(
@@ -89,6 +93,34 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            homeViewModel.isEmpty.collect { isEmpty ->
+                if (isEmpty) {
+                    binding.exploreButton.visibility = View.VISIBLE
+                    binding.textView.visibility = View.VISIBLE
+                    binding.picturesView.visibility = View.GONE
+                } else {
+                    binding.exploreButton.visibility = View.GONE
+                    binding.textView.visibility = View.GONE
+                    binding.picturesView.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        binding.exploreButton.setOnClickListener {
+            homeViewModel.loadCuratedPhotos()
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                homeViewModel.photos.collect { list ->
+                    adapter.appendList(list.takeLast(30))
+                }
+            }
+            binding.exploreButton.visibility = View.GONE
+            binding.textView.visibility = View.GONE
+            binding.picturesView.visibility = View.VISIBLE
+            query = ""
+            searchView.setQuery("", false)
+        }
+
         val collectionSelected = homeViewModel.selectedFeaturedButton
         if (collectionSelected in titlesList.indices)
         {
@@ -131,9 +163,18 @@ class HomeFragment : Fragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            homeViewModel.progress.collect { progress ->
+                binding.progressBar.progress = progress
+                binding.progressBar.visibility = if (progress in 1..99) View.VISIBLE else View.GONE
+            }
+        }
+
         if (query.isEmpty())
         {
             homeViewModel.loadCuratedPhotos()
+            if (binding.progressBar.progress != 100)
+                binding.progressBar.visibility = View.VISIBLE
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 homeViewModel.photos.collect { list ->
                     adapter.appendList(list.takeLast(30))
@@ -143,6 +184,8 @@ class HomeFragment : Fragment() {
         else
         {
             homeViewModel.loadPhotos(query)
+            if (binding.progressBar.progress != 100)
+                binding.progressBar.visibility = View.VISIBLE
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 homeViewModel.photos.collect { list ->
                     adapter.appendList(list.takeLast(30))
@@ -192,14 +235,17 @@ class HomeFragment : Fragment() {
                 }
                 else if (p0 != query)
                 {
-                    for (btn in titlesList)
-                    {
-                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                        btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
+                    searchJob?.cancel()
+                    searchJob = viewLifecycleOwner.lifecycleScope.launch {
+                        delay(400L)
+                        for (btn in titlesList) {
+                            btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                            btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
+                        }
+                        query = p0
+                        adapter.clearList()
+                        homeViewModel.loadPhotos(query)
                     }
-                    query = p0
-                    adapter.clearList()
-                    homeViewModel.loadPhotos(query)
                 }
                 return true
             }

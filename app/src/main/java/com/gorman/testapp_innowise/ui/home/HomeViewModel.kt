@@ -7,6 +7,7 @@ import com.gorman.testapp_innowise.data.api.CollectionItem
 import com.gorman.testapp_innowise.data.api.Photo
 import com.gorman.testapp_innowise.data.repository.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,12 @@ class HomeViewModel @Inject constructor(
     private val _collections = MutableStateFlow<List<CollectionItem>>(emptyList())
     val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
 
+    private val _isEmpty = MutableStateFlow<Boolean>(false)
+    val isEmpty: StateFlow<Boolean> = _isEmpty.asStateFlow()
+
+    private val _progress = MutableStateFlow(0)
+    val progress: StateFlow<Int> = _progress.asStateFlow()
+
     private var current_page = 1
     private var isLoading = false
     private var allLoading = false
@@ -36,11 +43,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result = repository.search(query, page = current_page)
-                if (result.isEmpty()) {
+                if (result.total_results == 0) {
                     allLoading = true
                 } else {
                     current_page++
-                    _photos.value += result
+                    _photos.value += result.photos
                 }
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
@@ -69,10 +76,25 @@ class HomeViewModel @Inject constructor(
                 loadNextPage(query)
                 Log.d("HomeViewModel", "Запрос отправлен")
                 val result = repository.search(query)
-                Log.d("HomeViewModel", "Результат: ${result.size} коллекций")
-                _photos.value = result
+                Log.d("HomeViewModel", "Результат: ${result.total_results} коллекций")
+                val total = result.photos.size
+                if (total == 0) {
+                    _isEmpty.value = true
+                    return@launch
+                }
+                val loaded = mutableListOf<Photo>()
+                for ((index, photo) in result.photos.withIndex()) {
+                    delay(30L) // для видимости прогресса
+                    loaded.add(photo)
+                    _photos.value = loaded.toList()
+                    _progress.value = ((index + 1) * 100 / total)
+                }
+                _photos.value = result.photos
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
+            }
+            finally {
+                _progress.value = 100
             }
         }
     }
@@ -90,6 +112,7 @@ class HomeViewModel @Inject constructor(
                 val result = repository.searchCurated()
                 Log.d("HomeViewModel", "Результат: ${result.size} коллекций")
                 _photos.value = result
+                _isEmpty.value = result.isEmpty()
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Ошибка при получении: ${e.message}", e)
             }
