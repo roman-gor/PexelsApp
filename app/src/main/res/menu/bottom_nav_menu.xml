@@ -4,12 +4,10 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/home_button_inactive"
-        android:iconTintMode="add"
         android:title="@string/title_home" />
 
     <item
         android:id="@+id/navigation_bookmarks"
         android:icon="@drawable/bookmark_button_inactive"
         android:title="@string/title_dashboard" />
-
 </menu>

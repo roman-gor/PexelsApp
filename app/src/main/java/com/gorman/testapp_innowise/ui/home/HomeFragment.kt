@@ -1,18 +1,13 @@
 package com.gorman.testapp_innowise.ui.home
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.Color.TRANSPARENT
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -25,10 +20,10 @@ import com.google.android.material.button.MaterialButton
 import com.gorman.testapp_innowise.PhotoAdapter
 import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.data.api.CollectionItem
-import com.gorman.testapp_innowise.data.api.PexelsResponse
-import com.gorman.testapp_innowise.data.api.Photo
 import com.gorman.testapp_innowise.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.observeOn
 
 @AndroidEntryPoint
 @Suppress("DEPRECATION")
@@ -40,6 +35,7 @@ class HomeFragment : Fragment() {
     private var query: String = ""
     private var collectionList: List<CollectionItem>? = null
     private var isNew = false
+    private var shouldHandleQueryChange = true
 
     @SuppressLint("DiscouragedApi", "ResourceAsColor")
     override fun onCreateView(
@@ -64,6 +60,13 @@ class HomeFragment : Fragment() {
             binding.title6,
             binding.title7
         )
+
+        binding.picturesView.visibility = View.VISIBLE
+        binding.exploreButton.visibility = View.GONE
+        binding.textView.visibility = View.GONE
+        binding.noNetworkImage.visibility = View.GONE
+        binding.tryAgainButton.visibility = View.GONE
+
         binding.picturesView.adapter = adapter
 
         binding.picturesView.layoutManager = layoutManager
@@ -86,6 +89,14 @@ class HomeFragment : Fragment() {
             }
         })
 
+        val collectionSelected = homeViewModel.selectedFeaturedButton
+        if (collectionSelected in titlesList.indices)
+        {
+            val selectedButton = titlesList[collectionSelected]
+            selectedButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            selectedButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.choose)
+        }
+
         if (homeViewModel.collections.value.isEmpty()) {
             homeViewModel.loadFeatureCollections()
         }
@@ -104,17 +115,19 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        for (title in titlesList)
+        for ((index, title) in titlesList.withIndex())
         {
             title.setOnClickListener {
                 for (btn in titlesList)
                 {
                     btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                    btn.backgroundTintList = ContextCompat.getColorStateList(context, R.color.main)
+                    btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
                 }
+                shouldHandleQueryChange = false
                 searchView.setQuery(title.text.toString(), true)
+                homeViewModel.selectedFeaturedButton = index
                 title.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                title.backgroundTintList = ContextCompat.getColorStateList(context, R.color.choose)
+                title.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.choose)
             }
         }
 
@@ -161,12 +174,32 @@ class HomeFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextChange(p0: String): Boolean {
+                if (!shouldHandleQueryChange) {
+                    shouldHandleQueryChange = true // сбрасываем обратно
+                    return true
+                }
                 if (p0.isBlank() && isNew) {
                     query = ""
                     isNew = false
+                    for (btn in titlesList)
+                    {
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                        btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
+                    }
                     adapter.clearList()
                     Log.d("Query", query)
                     homeViewModel.loadCuratedPhotos()
+                }
+                else if (p0 != query)
+                {
+                    for (btn in titlesList)
+                    {
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                        btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
+                    }
+                    query = p0
+                    adapter.clearList()
+                    homeViewModel.loadPhotos(query)
                 }
                 return true
             }

@@ -27,6 +27,7 @@ class HomeViewModel @Inject constructor(
     private var current_page = 1
     private var isLoading = false
     private var allLoading = false
+    var selectedFeaturedButton = -1
 
     fun loadNextPage(query: String)
     {

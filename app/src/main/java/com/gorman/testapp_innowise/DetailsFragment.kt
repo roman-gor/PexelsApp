@@ -33,12 +33,14 @@ class DetailsFragment : Fragment() {
         val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
         navView.visibility = View.GONE
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+
         binding.detailImage.visibility = View.VISIBLE
         binding.phName.visibility = View.VISIBLE
         binding.downloadButton.visibility = View.VISIBLE
         binding.likeButton.visibility = View.VISIBLE
         binding.exploreButton.visibility = View.GONE
         binding.textView.visibility = View.GONE
+
         return binding.root
     }
 
