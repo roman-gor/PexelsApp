@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-
+    val room_version = "2.7.2"
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -67,4 +67,12 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("androidx.hilt:hilt-navigation-fragment:1.2.0")
+    implementation("androidx.room:room-runtime:${room_version}")
+    ksp("androidx.room:room-compiler:${room_version}")
+    implementation("androidx.room:room-ktx:${room_version}")
+    implementation("androidx.room:room-rxjava2:${room_version}")
+    implementation("androidx.room:room-rxjava3:${room_version}")
+    implementation("androidx.room:room-guava:${room_version}")
+    testImplementation("androidx.room:room-testing:${room_version}")
+    implementation("androidx.room:room-paging:${room_version}")
 }

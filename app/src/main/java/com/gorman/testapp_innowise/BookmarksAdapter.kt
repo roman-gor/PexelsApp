@@ -7,33 +7,32 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.gorman.testapp_innowise.data.models.BookmarkImage
 import com.gorman.testapp_innowise.data.models.Photo
 
-class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHolder>() {
 
-    private val photoList = mutableListOf<Photo>()
+    private val bookmarksList = mutableListOf<BookmarkImage>()
     private var listener: OnItemClickListener? = null
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun appendList(list: List<Photo>)
-    {
-        val start = photoList.size
-        photoList.addAll(list)
-        notifyItemRangeChanged(start, list.size)
+    fun setList(newList: List<BookmarkImage>) {
+        bookmarksList.clear()
+        bookmarksList.addAll(newList)
+        notifyDataSetChanged()
     }
 
     fun clearList()
     {
-        photoList.clear()
+        bookmarksList.clear()
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PhotoViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_photo, parent, false)
-        return PhotoViewHolder(view, listener)
+    ): BookmarksViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_bookmark, parent, false)
+        return BookmarksViewHolder(view, listener)
     }
 
     interface OnItemClickListener {
@@ -44,16 +43,16 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
         this.listener = listener
     }
 
-    override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        holder.bind(photoList[position])
+    override fun onBindViewHolder(holder: BookmarksViewHolder, position: Int) {
+        holder.bind(bookmarksList[position])
     }
 
-    override fun getItemCount(): Int = photoList.size
+    override fun getItemCount(): Int = bookmarksList.size
 
-    fun getItem(position: Int): Photo = photoList[position]
+    fun getItem(position: Int): BookmarkImage = bookmarksList[position]
 
-    class PhotoViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
-        private val photoImageView: ImageView = itemView.findViewById<ImageView>(R.id.imageView)
+    class BookmarksViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
+        private val bookmarkImageView: ImageView = itemView.findViewById<ImageView>(R.id.bookmarkView)
 
         init {
             itemView.setOnClickListener {
@@ -64,12 +63,12 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
             }
         }
 
-        fun bind(photo: Photo) {
+        fun bind(bookmark: BookmarkImage) {
             Glide.with(itemView.context)
-                .load(photo.src.large)
+                .load(bookmark.imageUrl)
                 .placeholder(R.drawable.img_placeholder)
                 .error(R.drawable.img_placeholder)
-                .into(photoImageView)
+                .into(bookmarkImageView)
         }
     }
 }

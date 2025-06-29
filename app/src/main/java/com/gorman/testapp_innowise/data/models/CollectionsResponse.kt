@@ -1,4 +1,4 @@
-package com.gorman.testapp_innowise.data.api
+package com.gorman.testapp_innowise.data.models
 
 data class CollectionsResponse(
     val page: Int,

@@ -1,39 +1,48 @@
-package com.gorman.testapp_innowise.ui
+package com.gorman.testapp_innowise.ui.details
 
 import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gorman.testapp_innowise.R
-import com.gorman.testapp_innowise.data.api.Photo
+import com.gorman.testapp_innowise.data.models.Photo
 import com.gorman.testapp_innowise.databinding.FragmentDetailsBinding
-import com.gorman.testapp_innowise.databinding.FragmentHomeBinding
-import androidx.core.net.toUri
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import kotlin.getValue
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
+    private val detailsViewModel: DetailsViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val photo = arguments?.getParcelable<Photo>("photo")
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        val photo = arguments?.getParcelable<Photo>("photo", Photo::class.java)
         val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
         navView.visibility = View.GONE
-        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
         binding.detailImage.visibility = View.VISIBLE
         binding.phName.visibility = View.VISIBLE
         binding.downloadButton.visibility = View.VISIBLE
@@ -44,9 +53,10 @@ class DetailsFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val photo = arguments?.getParcelable<Photo>("photo")
+        val photo = arguments?.getParcelable<Photo>("photo", Photo::class.java)
         if (photo != null)
         {
             Glide.with(requireContext())
@@ -71,6 +81,22 @@ class DetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        lifecycleScope.launch {
+            val exists = detailsViewModel.searchInDBOnce(photo!!.src.large)
+            if (exists) {
+                binding.likeButton.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bookmark_button_active_detail
+                )
+            } else {
+                binding.likeButton.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.bookmark_button_inactive_detail
+                )
+            }
+        }
+
+
         binding.downloadButton.setOnClickListener {
             val url = photo?.src?.large // или любой URL картинки
             val request = DownloadManager.Request(url?.toUri())
@@ -82,6 +108,29 @@ class DetailsFragment : Fragment() {
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "image_${System.currentTimeMillis()}.jpg")
             val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloadManager.enqueue(request)
+        }
+
+        binding.likeButton.setOnClickListener {
+            if (photo != null) {
+                lifecycleScope.launch {
+                    val exists = detailsViewModel.searchInDBOnce(photo.src.large)
+                    if (exists) {
+                        detailsViewModel.deleteByUrl(photo.src.large)
+                        binding.likeButton.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.bookmark_button_inactive_detail
+                        )
+                        Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show()
+                    } else {
+                        detailsViewModel.addBookmark(photo.src.large)
+                        binding.likeButton.background = ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.bookmark_button_active_detail
+                        )
+                        Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 

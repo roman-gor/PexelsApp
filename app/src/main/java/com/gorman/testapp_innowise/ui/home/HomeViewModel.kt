@@ -3,8 +3,8 @@ package com.gorman.testapp_innowise.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gorman.testapp_innowise.data.api.CollectionItem
-import com.gorman.testapp_innowise.data.api.Photo
+import com.gorman.testapp_innowise.data.models.CollectionItem
+import com.gorman.testapp_innowise.data.models.Photo
 import com.gorman.testapp_innowise.data.repository.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

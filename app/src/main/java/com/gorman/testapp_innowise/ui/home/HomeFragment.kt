@@ -20,13 +20,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.gorman.testapp_innowise.PhotoAdapter
 import com.gorman.testapp_innowise.R
-import com.gorman.testapp_innowise.data.api.CollectionItem
+import com.gorman.testapp_innowise.data.models.CollectionItem
 import com.gorman.testapp_innowise.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

@@ -1,8 +1,9 @@
 package com.gorman.testapp_innowise.data.api
 
+import com.gorman.testapp_innowise.data.models.CollectionsResponse
+import com.gorman.testapp_innowise.data.models.PexelsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.http.Headers
 
 interface PexelsAPI {
 

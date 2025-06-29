@@ -1,9 +1,8 @@
 package com.gorman.testapp_innowise.data.repository
 
-import com.gorman.testapp_innowise.data.api.CollectionItem
+import com.gorman.testapp_innowise.data.models.CollectionItem
 import com.gorman.testapp_innowise.data.api.PexelsAPI
-import com.gorman.testapp_innowise.data.api.PexelsResponse
-import com.gorman.testapp_innowise.data.api.Photo
+import com.gorman.testapp_innowise.data.models.PexelsResponse
 import javax.inject.Inject
 
 class PhotoRepository @Inject constructor(

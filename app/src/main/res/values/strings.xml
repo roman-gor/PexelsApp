@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Pexels App</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Bookmarks</string>
+    <string name="title_bookmarks">Bookmarks</string>
     <string name="searchDefaultText">Search</string>
-    <!-- Strings used for fragments for navigation -->
     <string name="home_fragment_label">Home Fragment</string>
     <string name="details_fragment_label">Details Fragment</string>
     <string name="next">Next</string>

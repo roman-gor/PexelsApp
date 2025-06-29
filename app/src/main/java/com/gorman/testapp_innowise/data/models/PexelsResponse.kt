@@ -1,4 +1,4 @@
-package com.gorman.testapp_innowise.data.api
+package com.gorman.testapp_innowise.data.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
