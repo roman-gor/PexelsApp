@@ -172,6 +172,7 @@
         android:layout_marginEnd="20dp"
         android:clipToPadding="false"
         android:paddingBottom="72dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -182,10 +183,10 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/choose"
         android:max="100"
         android:progress="0"
         android:visibility="gone"
-        android:backgroundTint="@color/choose"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titlesMenu" />
@@ -229,15 +230,14 @@
         android:id="@+id/noNetworkImage"
         android:layout_width="156dp"
         android:layout_height="121dp"
-        android:layout_marginStart="127dp"
         android:layout_marginTop="226dp"
-        android:layout_marginEnd="128dp"
         android:src="@drawable/no_network_icon"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/tryAgainButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titlesMenu" />
+        app:layout_constraintTop_toBottomOf="@+id/titlesMenu"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tryAgainButton"
@@ -250,12 +250,9 @@
         android:textAllCaps="false"
         android:textColor="@color/choose"
         android:textSize="18sp"
-        android:visibility="gone"
         app:backgroundTint="#00FFFFFF"
         app:backgroundTintMode="add"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.592" />
+        app:layout_constraintTop_toBottomOf="@+id/noNetworkImage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

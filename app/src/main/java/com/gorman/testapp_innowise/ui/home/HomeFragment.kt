@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -119,6 +120,52 @@ class HomeFragment : Fragment() {
             binding.picturesView.visibility = View.VISIBLE
             query = ""
             searchView.setQuery("", false)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            homeViewModel.loadResult.collect { result ->
+                when (result) {
+                    is LoadResult.Success -> {
+                        binding.noNetworkImage.visibility = View.GONE
+                        binding.tryAgainButton.visibility = View.GONE
+                        binding.picturesView.visibility = View.VISIBLE
+                    }
+                    is LoadResult.Empty -> {
+
+                    }
+                    is LoadResult.Error -> {
+                        binding.noNetworkImage.visibility = View.VISIBLE
+                        binding.tryAgainButton.visibility = View.VISIBLE
+                        binding.picturesView.visibility = View.GONE
+                        when (result.exception) {
+                            is java.net.UnknownHostException,
+                            is java.net.SocketTimeoutException,
+                            is java.io.IOException -> {
+                                Toast.makeText(requireContext(), "Нет подключения к сети", Toast.LENGTH_SHORT).show()
+                            }
+                            is retrofit2.HttpException -> {
+                                if (result.exception.code() == 429)
+                                    Toast.makeText(requireContext(), "Слишком много запросов. Подожди немного", Toast.LENGTH_SHORT).show()
+                                else
+                                    Toast.makeText(requireContext(), "Ошибка сервера: ${result.exception.code()}", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                Toast.makeText(requireContext(), "Неизвестная ошибка", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.tryAgainButton.setOnClickListener {
+            binding.tryAgainButton.visibility = View.GONE
+            binding.noNetworkImage.visibility = View.GONE
+            if (query.isEmpty()) {
+                homeViewModel.loadCuratedPhotos()
+            } else {
+                homeViewModel.loadPhotos(query)
+            }
         }
 
         val collectionSelected = homeViewModel.selectedFeaturedButton
