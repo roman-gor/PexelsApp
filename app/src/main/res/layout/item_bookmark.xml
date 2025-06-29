@@ -27,7 +27,7 @@
             android:background="#66000000" />
 
         <TextView
-            android:id="@+id/photographerName"
+            android:id="@+id/phName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

@@ -26,9 +26,9 @@ class BookmarksViewModel @Inject constructor(
         }
     }
 
-    fun addBookmark(imageUrl: String) {
+    fun addBookmark(imageUrl: String, name: String) {
         viewModelScope.launch {
-            repository.insertImage(imageUrl)
+            repository.insertImage(imageUrl, name)
         }
     }
 

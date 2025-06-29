@@ -10,7 +10,7 @@
         android:id="@+id/bookmarksTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="52dp"
         android:fontFamily="@font/mulish_bold"
         android:text="@string/title_bookmarks"
         android:textColor="@color/black"
@@ -29,8 +29,43 @@
         android:layout_marginEnd="20dp"
         android:clipToPadding="false"
         android:paddingBottom="72dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bookmarksTitle" />
+
+    <TextView
+        android:id="@+id/nothingSaveText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/mulish_medium"
+        android:text="@string/NoSavedImages"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.449" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/exploreButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:fontFamily="@font/mulish_bold"
+        android:minWidth="0dp"
+        android:text="Explore"
+        android:textAllCaps="false"
+        android:textColor="@color/choose"
+        android:textSize="18sp"
+        app:backgroundTint="#00FFFFFF"
+        app:backgroundTintMode="add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.489" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

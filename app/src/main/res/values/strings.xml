@@ -8,4 +8,5 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="ResultError">No result found</string>
+    <string name="NoSavedImages">You haven\'t saved anything yet</string>
 </resources>

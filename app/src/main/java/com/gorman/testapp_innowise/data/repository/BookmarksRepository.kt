@@ -9,8 +9,8 @@ import javax.inject.Inject
 class BookmarksRepository @Inject constructor(
     private val dao: BookmarksImageDao
 ) {
-    suspend fun insertImage(url: String) {
-        dao.insert(BookmarkImage(imageUrl = url))
+    suspend fun insertImage(url: String, name: String) {
+        dao.insert(BookmarkImage(imageUrl = url, phName = name))
     }
 
     fun getAllImages(): Flow<List<BookmarkImage>> = flow {

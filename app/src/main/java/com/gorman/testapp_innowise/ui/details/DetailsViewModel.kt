@@ -19,8 +19,8 @@ class DetailsViewModel @Inject constructor(
     private val _bookmarks = MutableStateFlow<List<BookmarkImage>>(emptyList())
     val bookmarks: StateFlow<List<BookmarkImage>> = _bookmarks.asStateFlow()
 
-    suspend fun addBookmark(imageUrl: String) {
-        repository.insertImage(imageUrl)
+    suspend fun addBookmark(imageUrl: String, name: String) {
+        repository.insertImage(imageUrl, name)
     }
 
     suspend fun searchInDBOnce(url: String): Boolean {

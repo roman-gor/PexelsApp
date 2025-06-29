@@ -9,5 +9,6 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "bookmarks_images")
 data class BookmarkImage(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val imageUrl: String
+    val imageUrl: String,
+    val phName: String
 ) : Parcelable

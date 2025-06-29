@@ -12,7 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Database(entities = [BookmarkImage::class], version = 1)
+@Database(entities = [BookmarkImage::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookmarkImageDao(): BookmarksImageDao
 }

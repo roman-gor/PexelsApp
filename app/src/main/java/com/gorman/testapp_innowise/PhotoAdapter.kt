@@ -17,9 +17,12 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
     @SuppressLint("NotifyDataSetChanged")
     fun appendList(list: List<Photo>)
     {
+        val existingUrls = photoList.map { it.src.large }.toSet()
+        val filteredList = list.filter { it.src.large !in existingUrls }
+        if (filteredList.isEmpty()) return
         val start = photoList.size
-        photoList.addAll(list)
-        notifyItemRangeChanged(start, list.size)
+        photoList.addAll(filteredList)
+        notifyItemRangeInserted(start, filteredList.size)
     }
 
     fun clearList()

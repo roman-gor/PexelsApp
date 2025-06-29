@@ -40,11 +40,12 @@ class BookmarksFragment : Fragment() {
         binding.bookmarksImgView.adapter = adapter
 
         binding.bookmarksImgView.layoutManager = layoutManager
+        bookmarksViewModel.loadBookmarks()
         adapter.setOnItemClickListener(object : BookmarksAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val bookmark = adapter.getItem(position)
                 val bundle = Bundle().apply {
-                    putParcelable("photo", bookmark)
+                    putParcelable("bookmark", bookmark)
                 }
                 findNavController().navigate(R.id.action_BookmarksFragment_to_DetailsFragment, bundle)
             }
@@ -52,11 +53,26 @@ class BookmarksFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bookmarksViewModel.bookmarks.collect { list ->
-                    adapter.setList(list.takeLast(30))
+                    if(list.isNotEmpty())
+                    {
+                        adapter.setList(list.takeLast(30))
+                        binding.exploreButton3.visibility = View.GONE
+                        binding.nothingSaveText.visibility = View.GONE
+                        binding.bookmarksImgView.visibility = View.VISIBLE
+                    }
+                    else
+                    {
+                        binding.exploreButton3.visibility = View.VISIBLE
+                        binding.nothingSaveText.visibility = View.VISIBLE
+                        binding.bookmarksImgView.visibility = View.GONE
+                    }
                 }
             }
         }
-        bookmarksViewModel.loadBookmarks()
+
+        binding.exploreButton3.setOnClickListener {
+            findNavController().navigate(R.id.action_BookmarksFragment_to_HomeFragment)
+        }
         val root: View = binding.root
         return root
     }

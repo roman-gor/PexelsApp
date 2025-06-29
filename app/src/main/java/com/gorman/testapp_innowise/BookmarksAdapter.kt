@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gorman.testapp_innowise.data.models.BookmarkImage
@@ -53,6 +54,7 @@ class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHold
 
     class BookmarksViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
         private val bookmarkImageView: ImageView = itemView.findViewById<ImageView>(R.id.bookmarkView)
+        private val phName: TextView = itemView.findViewById<TextView>(R.id.phName)
 
         init {
             itemView.setOnClickListener {
@@ -69,6 +71,7 @@ class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHold
                 .placeholder(R.drawable.img_placeholder)
                 .error(R.drawable.img_placeholder)
                 .into(bookmarkImageView)
+            phName.text = bookmark.phName
         }
     }
 }

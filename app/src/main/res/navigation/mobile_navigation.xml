@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_BookmarksFragment_to_DetailsFragment"
             app:destination="@id/navigation_details" />
+        <action
+            android:id="@+id/action_BookmarksFragment_to_HomeFragment"
+            app:destination="@id/navigation_home" />
     </fragment>
 
     <fragment
