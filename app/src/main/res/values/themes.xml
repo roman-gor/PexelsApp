@@ -17,4 +17,10 @@
         <item name="android:textColorHint">#868686</item>
         <item name="android:windowFullscreen">false</item>
     </style>
+    <style name="BottomNavActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:width">48dp</item>
+        <item name="android:height">2dp</item>
+        <item name="android:color">@color/choose</item>
+        <item name="android:drawable">@drawable/navigation_active_bg</item>
+    </style>
 </resources>

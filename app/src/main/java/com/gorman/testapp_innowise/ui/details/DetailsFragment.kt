@@ -8,6 +8,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -42,8 +43,10 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        val navView = requireActivity().findViewById<FrameLayout>(R.id.bottom_nav_container)
         navView.visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.indicator).visibility = View.GONE
+
         binding.detailImage.visibility = View.VISIBLE
         binding.phName.visibility = View.VISIBLE
         binding.downloadButton.visibility = View.VISIBLE
@@ -199,8 +202,9 @@ class DetailsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
-        navView.visibility = View.VISIBLE
+        requireActivity().findViewById<FrameLayout>(R.id.bottom_nav_container).visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.indicator).visibility = View.VISIBLE
+
     }
 
     private fun showEmptyState() {

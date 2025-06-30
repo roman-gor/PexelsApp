@@ -1,11 +1,14 @@
 package com.gorman.testapp_innowise
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gorman.testapp_innowise.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,12 +18,17 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var indicator: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        bottomNav = binding.navView
+        indicator = binding.indicator
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
@@ -35,5 +43,41 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars = true
 
         binding.navView.setupWithNavController(navController)
+
+        bottomNav.post {
+            moveIndicatorToIndex(0)
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val index = when(destination.id) {
+                R.id.navigation_home -> 0
+                R.id.navigation_bookmarks -> 1
+                else -> 0
+            }
+            moveIndicatorToIndex(index)
+        }
+    }
+
+    private fun moveIndicatorToIndex(index: Int) {
+        val menuView = bottomNav.getChildAt(0) as ViewGroup
+        val itemView = menuView.getChildAt(index) ?: return
+
+        val container = indicator.parent as ViewGroup
+
+        val itemLocation = IntArray(2)
+        val containerLocation = IntArray(2)
+
+        itemView.getLocationInWindow(itemLocation)
+        container.getLocationInWindow(containerLocation)
+
+        val itemCenterX = itemLocation[0] + itemView.width / 2
+        val containerLeft = containerLocation[0]
+
+        val targetX = itemCenterX - containerLeft - indicator.width / 2 - 3
+
+        indicator.animate()
+            .translationX(targetX.toFloat())
+            .setDuration(200)
+            .start()
     }
 }
