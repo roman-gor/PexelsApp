@@ -126,16 +126,19 @@ class HomeFragment : Fragment() {
                             is java.net.UnknownHostException,
                             is java.net.SocketTimeoutException,
                             is java.io.IOException -> {
-                                Toast.makeText(requireContext(), "Нет подключения к сети", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), R.string.NetworkError, Toast.LENGTH_SHORT).show()
                             }
                             is retrofit2.HttpException -> {
                                 if (result.exception.code() == 429)
-                                    Toast.makeText(requireContext(), "Слишком много запросов. Подожди немного", Toast.LENGTH_SHORT).show()
-                                else
-                                    Toast.makeText(requireContext(), "Ошибка сервера: ${result.exception.code()}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), R.string.TooManyRequests, Toast.LENGTH_SHORT).show()
+                                else {
+                                    val code = result.exception.code()
+                                    val text = getString(R.string.ServerError, code)
+                                    Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+                                }
                             }
                             else -> {
-                                Toast.makeText(requireContext(), "Неизвестная ошибка", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), R.string.UnknownError, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pexels App</string>
+    <string name="app_name" translatable="false">Pexels App</string>
     <string name="title_home">Home</string>
     <string name="title_bookmarks">Bookmarks</string>
     <string name="searchDefaultText">Search</string>
@@ -9,4 +9,11 @@
     <string name="previous">Previous</string>
     <string name="ResultError">No result found</string>
     <string name="NoSavedImages">You haven\'t saved anything yet</string>
+    <string name="BookmarkDelete">Deleted from bookmarks</string>
+    <string name="BookmarkAdd">Added to bookmarks</string>
+    <string name="NetworkError">No network connection</string>
+    <string name="TooManyRequests">Too many requests. Wait a little</string>
+    <string name="ServerError">Server error: %1$d</string>
+    <string name="UnknownError">Unknown error</string>
+    <string name="DownloadStart">Downloading the image…</string>
 </resources>

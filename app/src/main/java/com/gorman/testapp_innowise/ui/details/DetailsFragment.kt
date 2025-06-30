@@ -1,6 +1,7 @@
 package com.gorman.testapp_innowise.ui.details
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -8,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -61,6 +63,7 @@ class DetailsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -109,7 +112,8 @@ class DetailsFragment : Fragment() {
                 })
                 .into(binding.detailImage)
             binding.phName.text = photo.photographer
-        } else if (bookmark != null) {
+        }
+        else if (bookmark != null) {
             Glide.with(requireContext())
                 .load(bookmark.imageUrl)
                 .transform(RoundedCorners(46))
@@ -138,7 +142,8 @@ class DetailsFragment : Fragment() {
                 })
                 .into(binding.detailImage)
             binding.phName.text = bookmark.phName
-        } else {
+        }
+        else {
             progressBar.visibility = View.GONE
             showEmptyState()
         }
@@ -184,32 +189,57 @@ class DetailsFragment : Fragment() {
         }
 
 
-        binding.downloadButton.setOnClickListener {
-            if (photo != null)
-            {
-                val url = photo.src.large
-                val request = DownloadManager.Request(url.toUri())
-                    .setTitle("Скачивание изображения")
-                    .setDescription("Скачивается картинка")
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "image_${System.currentTimeMillis()}.jpg")
-                val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                downloadManager.enqueue(request)
-            }
-            else
-            {
-                val url = bookmark!!.imageUrl
-                val request = DownloadManager.Request(url.toUri())
-                    .setTitle("Скачивание изображения")
-                    .setDescription("Скачивается картинка")
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "image_${System.currentTimeMillis()}.jpg")
-                val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                downloadManager.enqueue(request)
+        binding.downloadButton.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.downloadButton.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.download_button_click
+                    )
+                    true
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    binding.downloadButton.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.download_button
+                    )
+                    if (photo != null)
+                    {
+                        val url = photo.src.large
+                        val request = DownloadManager.Request(url.toUri())
+                            .setTitle(ContextCompat.getString(requireContext(),R.string.DownloadStart))
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true)
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "image_${System.currentTimeMillis()}.jpg")
+                        Toast.makeText(requireContext(), R.string.DownloadStart, Toast.LENGTH_SHORT).show()
+                        val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                        downloadManager.enqueue(request)
+                    }
+                    else
+                    {
+                        val url = bookmark!!.imageUrl
+                        val request = DownloadManager.Request(url.toUri())
+                            .setTitle(ContextCompat.getString(requireContext(),R.string.DownloadStart))
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setAllowedOverMetered(true)
+                            .setAllowedOverRoaming(true)
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "image_${System.currentTimeMillis()}.jpg")
+                        Toast.makeText(requireContext(), R.string.DownloadStart, Toast.LENGTH_SHORT).show()
+                        val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                        downloadManager.enqueue(request)
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    binding.downloadButton.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.download_button
+                    )
+                    true
+                }
+                else -> false
             }
         }
 
@@ -223,14 +253,14 @@ class DetailsFragment : Fragment() {
                             requireContext(),
                             R.drawable.bookmark_button_inactive_detail
                         )
-                        Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.BookmarkDelete, Toast.LENGTH_SHORT).show()
                     } else {
                         detailsViewModel.addBookmark(photo.src.large, photo.photographer)
                         binding.likeButton.background = ContextCompat.getDrawable(
                             requireContext(),
                             R.drawable.bookmark_button_active_detail
                         )
-                        Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.BookmarkAdd, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -244,14 +274,14 @@ class DetailsFragment : Fragment() {
                             requireContext(),
                             R.drawable.bookmark_button_inactive_detail
                         )
-                        Toast.makeText(requireContext(), "Удалено из избранного", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.BookmarkDelete, Toast.LENGTH_SHORT).show()
                     } else {
                         detailsViewModel.addBookmark(bookmark.imageUrl, bookmark.phName)
                         binding.likeButton.background = ContextCompat.getDrawable(
                             requireContext(),
                             R.drawable.bookmark_button_active_detail
                         )
-                        Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.BookmarkAdd, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_home">Главная</string>
+    <string name="title_bookmarks">Избранное</string>
+    <string name="searchDefaultText">Поиск</string>
+    <string name="home_fragment_label">Главная</string>
+    <string name="details_fragment_label">Подробнее</string>
+    <string name="next">Следующая</string>
+    <string name="previous">Предыдущая</string>
+    <string name="ResultError">Ничего не найдено</string>
+    <string name="NoSavedImages">Вы еще ничего не сохранили</string>
+    <string name="BookmarkDelete">Удалено из избранного</string>
+    <string name="BookmarkAdd">Добавлено в избранное</string>
+    <string name="NetworkError">Нет подключения к сети</string>
+    <string name="TooManyRequests">Слишком много запросов. Подожди немного</string>
+    <string name="ServerError">Ошибка сервера: %1$d</string>
+    <string name="UnknownError">Неизвестная ошибка</string>
+    <string name="DownloadStart">Скачивание изображения…</string>
+</resources>
