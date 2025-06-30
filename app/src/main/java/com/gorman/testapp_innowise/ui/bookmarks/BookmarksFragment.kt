@@ -14,7 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.gorman.testapp_innowise.BookmarksAdapter
+import com.gorman.testapp_innowise.ui.adapters.BookmarksAdapter
 import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.databinding.FragmentBookmarksBinding
 import dagger.hilt.android.AndroidEntryPoint

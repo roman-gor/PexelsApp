@@ -1,5 +1,6 @@
 package com.gorman.testapp_innowise.di
 
+import android.util.Log
 import com.gorman.testapp_innowise.data.api.PexelsAPI
 import dagger.Module
 import dagger.Provides
@@ -10,18 +11,26 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.gorman.testapp_innowise.BuildConfig
 
 private const val BASE_URL = "https://api.pexels.com/"
+private lateinit var apiKey: String
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @Provides
-    fun provideAuthInterceptor(): Interceptor = Interceptor { chain ->
+    fun provideApiKey(): String {
+        return BuildConfig.PEXELS_API_KEY
+    }
+
+    @Provides
+    fun provideAuthInterceptor(apiKey: String): Interceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
-            .addHeader("Authorization", "Bp5on48mdl079Q514RaE3gxt7uDQUzwSyvel6G8JlbQfqWMQlPM8eldF")
+            .addHeader("Authorization", apiKey)
             .build()
+        Log.d("PEXELS", apiKey)
         chain.proceed(request)
     }
 

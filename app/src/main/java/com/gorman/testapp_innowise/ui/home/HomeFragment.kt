@@ -18,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
-import com.gorman.testapp_innowise.PhotoAdapter
+import com.gorman.testapp_innowise.ui.adapters.PhotoAdapter
 import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.data.models.CollectionItem
 import com.gorman.testapp_innowise.databinding.FragmentHomeBinding

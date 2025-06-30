@@ -1,6 +1,5 @@
-package com.gorman.testapp_innowise
+package com.gorman.testapp_innowise.ui.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.data.models.BookmarkImage
-import com.gorman.testapp_innowise.data.models.Photo
 
 class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHolder>() {
 
