@@ -66,6 +66,7 @@ class DetailsFragment : Fragment() {
                 .load(photo.src.large)
                 .transform(RoundedCorners(46))
                 .into(binding.detailImage)
+            binding.phName.text = photo.photographer
             showContentViews()
         }
         else if (bookmark != null)

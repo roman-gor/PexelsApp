@@ -64,11 +64,7 @@ class HomeFragment : Fragment() {
             binding.title7
         )
 
-        binding.picturesView.visibility = View.VISIBLE
-        binding.exploreButton.visibility = View.GONE
-        binding.textView.visibility = View.GONE
-        binding.noNetworkImage.visibility = View.GONE
-        binding.tryAgainButton.visibility = View.GONE
+        showContextView()
 
         binding.picturesView.adapter = adapter
 
@@ -76,6 +72,7 @@ class HomeFragment : Fragment() {
         binding.picturesView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                showContextView()
                 val lm = recyclerView.layoutManager as? StaggeredGridLayoutManager ?: return
 
                 val totalItemCount = lm.itemCount
@@ -95,13 +92,9 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             homeViewModel.isEmpty.collect { isEmpty ->
                 if (isEmpty) {
-                    binding.exploreButton.visibility = View.VISIBLE
-                    binding.textView.visibility = View.VISIBLE
-                    binding.picturesView.visibility = View.GONE
+                    showEmptyResult()
                 } else {
-                    binding.exploreButton.visibility = View.GONE
-                    binding.textView.visibility = View.GONE
-                    binding.picturesView.visibility = View.VISIBLE
+                    showContextView()
                 }
             }
         }
@@ -113,9 +106,7 @@ class HomeFragment : Fragment() {
                     adapter.appendList(list.takeLast(30))
                 }
             }
-            binding.exploreButton.visibility = View.GONE
-            binding.textView.visibility = View.GONE
-            binding.picturesView.visibility = View.VISIBLE
+            showContextView()
             query = ""
             searchView.setQuery("", false)
         }
@@ -124,17 +115,13 @@ class HomeFragment : Fragment() {
             homeViewModel.loadResult.collect { result ->
                 when (result) {
                     is LoadResult.Success -> {
-                        binding.noNetworkImage.visibility = View.GONE
-                        binding.tryAgainButton.visibility = View.GONE
-                        binding.picturesView.visibility = View.VISIBLE
+                        showContextView()
                     }
                     is LoadResult.Empty -> {
 
                     }
                     is LoadResult.Error -> {
-                        binding.noNetworkImage.visibility = View.VISIBLE
-                        binding.tryAgainButton.visibility = View.VISIBLE
-                        binding.picturesView.visibility = View.GONE
+                        showNetworkError()
                         when (result.exception) {
                             is java.net.UnknownHostException,
                             is java.net.SocketTimeoutException,
@@ -157,8 +144,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.tryAgainButton.setOnClickListener {
-            binding.tryAgainButton.visibility = View.GONE
-            binding.noNetworkImage.visibility = View.GONE
+            showContextView()
             if (query.isEmpty()) {
                 homeViewModel.loadCuratedPhotos()
             } else {
@@ -217,6 +203,7 @@ class HomeFragment : Fragment() {
 
         if (query.isEmpty())
         {
+            showContextView()
             homeViewModel.loadCuratedPhotos()
             if (binding.progressBar.progress != 100)
                 binding.progressBar.visibility = View.VISIBLE
@@ -228,6 +215,7 @@ class HomeFragment : Fragment() {
         }
         else
         {
+            showContextView()
             homeViewModel.loadPhotos(query)
             if (binding.progressBar.progress != 100)
                 binding.progressBar.visibility = View.VISIBLE
@@ -244,7 +232,6 @@ class HomeFragment : Fragment() {
                     putParcelable("photo", photo)
                 }
                 findNavController().navigate(R.id.action_HomeFragment_to_DetailsFragment, bundle)
-
             }
         })
         searchView.background = ContextCompat.getDrawable(requireContext(), R.drawable.searchview_background)
@@ -263,10 +250,11 @@ class HomeFragment : Fragment() {
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextChange(p0: String): Boolean {
                 if (!shouldHandleQueryChange) {
-                    shouldHandleQueryChange = true // сбрасываем обратно
+                    shouldHandleQueryChange = true
                     return true
                 }
                 if (p0.isBlank() && isNew) {
+                    showContextView()
                     query = ""
                     isNew = false
                     for (btn in titlesList)
@@ -280,6 +268,7 @@ class HomeFragment : Fragment() {
                 }
                 else if (p0 != query)
                 {
+                    showContextView()
                     searchJob?.cancel()
                     searchJob = viewLifecycleOwner.lifecycleScope.launch {
                         delay(400L)
@@ -296,6 +285,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextSubmit(searchQuery: String): Boolean {
+                showContextView()
                 query = searchQuery.trim().orEmpty()
                 adapter.clearList()
                 isNew = true
@@ -312,5 +302,32 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showContextView()
+    {
+        binding.picturesView.visibility = View.VISIBLE
+        binding.exploreButton.visibility = View.GONE
+        binding.textView.visibility = View.GONE
+        binding.noNetworkImage.visibility = View.GONE
+        binding.tryAgainButton.visibility = View.GONE
+    }
+
+    private fun showNetworkError()
+    {
+        binding.picturesView.visibility = View.GONE
+        binding.exploreButton.visibility = View.GONE
+        binding.textView.visibility = View.GONE
+        binding.noNetworkImage.visibility = View.VISIBLE
+        binding.tryAgainButton.visibility = View.VISIBLE
+    }
+
+    private fun showEmptyResult()
+    {
+        binding.picturesView.visibility = View.GONE
+        binding.exploreButton.visibility = View.VISIBLE
+        binding.textView.visibility = View.VISIBLE
+        binding.noNetworkImage.visibility = View.GONE
+        binding.tryAgainButton.visibility = View.GONE
     }
 }

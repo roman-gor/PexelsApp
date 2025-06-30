@@ -93,6 +93,9 @@ class HomeViewModel @Inject constructor(
                     _loadResult.value = LoadResult.Empty
                     return@launch
                 }
+                else {
+                    _isEmpty.value = false
+                }
                 val loaded = mutableListOf<Photo>()
                 for ((index, photo) in result.photos.withIndex()) {
                     delay(30L)
@@ -133,6 +136,9 @@ class HomeViewModel @Inject constructor(
                     _isEmpty.value = true
                     _loadResult.value = LoadResult.Empty
                     return@launch
+                }
+                else {
+                    _isEmpty.value = false
                 }
                 for ((index, photo) in result.photos.withIndex()) {
                     delay(30L)
