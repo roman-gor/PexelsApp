@@ -21,6 +21,7 @@ import com.gorman.testapp_innowise.ui.home.LoadResult
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
@@ -78,8 +79,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_bookmarks
             )
         )
-        ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars = true
-
+        val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars =
+            nightModeFlags != Configuration.UI_MODE_NIGHT_YES
         binding.navView.setupWithNavController(navController)
 
         bottomNav.post {
