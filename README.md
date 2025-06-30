@@ -5,14 +5,14 @@ This is a test assignment project for internship.
 ## Description
 
 The app displays photos fetched from the Pexels API, similar to Pinterest.  
-Users can search images, download them, and add images to favorites.
+Users can search images, download them, and add images to bookmarks.
 
 ## Features
 
 - Browse photos from Pexels API  
 - Search for images by keyword  
 - Download images to device  
-- Add/remove images to/from favorites
+- Add/remove images to/from bookmarks
 
 ## Tech Stack
 
