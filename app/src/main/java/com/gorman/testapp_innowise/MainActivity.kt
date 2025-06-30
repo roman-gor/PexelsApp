@@ -1,7 +1,9 @@
 package com.gorman.testapp_innowise
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -9,6 +11,7 @@ import com.gorman.testapp_innowise.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_bookmarks
             )
         )
+        ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars = true
 
         binding.navView.setupWithNavController(navController)
     }

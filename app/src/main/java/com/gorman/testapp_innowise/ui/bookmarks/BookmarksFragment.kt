@@ -70,6 +70,14 @@ class BookmarksFragment : Fragment() {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            bookmarksViewModel.bookmarksProgress.collect { progress ->
+                binding.progressBookmarkBar.progress = progress
+                binding.progressBookmarkBar.visibility =
+                    if (progress in 1..99) View.VISIBLE else View.GONE
+            }
+        }
+
         binding.exploreButton3.setOnClickListener {
             findNavController().navigate(R.id.action_BookmarksFragment_to_HomeFragment)
         }
