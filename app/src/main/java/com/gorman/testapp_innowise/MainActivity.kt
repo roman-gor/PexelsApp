@@ -11,6 +11,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gorman.testapp_innowise.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.gorman.testapp_innowise.ui.home.HomeViewModel
+import com.gorman.testapp_innowise.ui.home.LoadResult
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Suppress("DEPRECATION")
@@ -20,10 +28,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var indicator: View
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val isLoading = AtomicBoolean(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        splashScreen.setKeepOnScreenCondition {
+            isLoading.get()
+        }
+        lifecycleScope.launch {
+            homeViewModel.loadResult.collect { loadResult ->
+                when (loadResult) {
+                    is LoadResult.Loading -> isLoading.set(true)
+                    is LoadResult.Success,
+                    is LoadResult.Empty,
+                    is LoadResult.Error -> isLoading.set(false)
+                }
+            }
+        }
+        homeViewModel.loadPhotos("nature")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

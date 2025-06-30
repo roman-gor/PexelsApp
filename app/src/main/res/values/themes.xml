@@ -17,4 +17,10 @@
         <item name="android:textColorHint">#868686</item>
         <item name="android:windowFullscreen">false</item>
     </style>
+    <style name="Theme.PexelsApp.Splash" parent="Theme.SplashScreen">
+        <!-- Укажи иконку для splash -->
+        <item name="windowSplashScreenBackground">@color/choose</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.TestApp_Innowise</item>
+    </style>
 </resources>

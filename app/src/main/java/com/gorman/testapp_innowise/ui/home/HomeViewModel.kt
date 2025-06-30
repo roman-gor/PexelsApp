@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class LoadResult {
+    object Loading : LoadResult()
     object Success : LoadResult()
     object Empty : LoadResult()
     data class Error(val exception: Throwable) : LoadResult()
@@ -76,6 +77,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadPhotos(query: String)
     {
+        _loadResult.value = LoadResult.Loading
         viewModelScope.launch {
             try {
                 current_page = 1

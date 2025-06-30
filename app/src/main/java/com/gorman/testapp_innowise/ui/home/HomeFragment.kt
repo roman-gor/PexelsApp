@@ -114,6 +114,9 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             homeViewModel.loadResult.collect { result ->
                 when (result) {
+                    is LoadResult.Loading -> {
+
+                    }
                     is LoadResult.Success -> {
                         showContextView()
                     }

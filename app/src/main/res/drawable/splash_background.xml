@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/choose" /> <!-- фон -->
+    <item>
+        <bitmap
+            android:gravity="fill"
+            android:src="@drawable/splash_screen" />
+    </item>
+</layer-list>
