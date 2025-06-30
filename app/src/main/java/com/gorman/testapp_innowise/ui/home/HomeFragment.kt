@@ -145,6 +145,7 @@ class HomeFragment : Fragment() {
 
         binding.tryAgainButton.setOnClickListener {
             showContextView()
+            homeViewModel.loadFeatureCollections()
             if (query.isEmpty()) {
                 homeViewModel.loadCuratedPhotos()
             } else {

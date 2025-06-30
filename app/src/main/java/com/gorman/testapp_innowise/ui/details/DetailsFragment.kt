@@ -1,7 +1,9 @@
 package com.gorman.testapp_innowise.ui.details
 
+import android.animation.ValueAnimator
 import android.app.DownloadManager
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,11 +18,13 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.load.DataSource
 import com.gorman.testapp_innowise.R
 import com.gorman.testapp_innowise.data.models.BookmarkImage
 import com.gorman.testapp_innowise.data.models.Photo
@@ -63,28 +67,82 @@ class DetailsFragment : Fragment() {
         val photo = arguments?.getParcelable<Photo>("photo", Photo::class.java)
         val bookmark = arguments?.getParcelable<BookmarkImage>("bookmark", BookmarkImage::class.java)
 
-        if (photo != null)
-        {
+
+        val progressBar = binding.progressBar
+        progressBar.visibility = View.VISIBLE
+        progressBar.progress = 0
+        val animator = ValueAnimator.ofInt(0, 100).apply {
+            duration = 1000
+            repeatMode = ValueAnimator.RESTART
+            repeatCount = ValueAnimator.INFINITE
+            addUpdateListener { animation ->
+                progressBar.progress = animation.animatedValue as Int
+            }
+            start()
+        }
+        if (photo != null) {
             Glide.with(requireContext())
                 .load(photo.src.large)
                 .transform(RoundedCorners(46))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?, model: Any?,
+                        target: Target<Drawable>?, isFirstResource: Boolean
+                    ): Boolean {
+                        animator.cancel()
+                        progressBar.visibility = View.GONE
+                        showEmptyState()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?, model: Any?,
+                        target: Target<Drawable>?, dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        animator.cancel()
+                        progressBar.progress = 100
+                        progressBar.visibility = View.GONE
+                        showContentViews()
+                        return false
+                    }
+                })
                 .into(binding.detailImage)
             binding.phName.text = photo.photographer
-            showContentViews()
-        }
-        else if (bookmark != null)
-        {
+        } else if (bookmark != null) {
             Glide.with(requireContext())
                 .load(bookmark.imageUrl)
                 .transform(RoundedCorners(46))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?, model: Any?,
+                        target: Target<Drawable>?, isFirstResource: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
+                        animator.cancel()
+                        showEmptyState()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?, model: Any?,
+                        target: Target<Drawable>?, dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
+                        progressBar.progress = 100
+                        animator.cancel()
+                        showContentViews()
+                        return false
+                    }
+                })
                 .into(binding.detailImage)
             binding.phName.text = bookmark.phName
-            showContentViews()
-        }
-        else
-        {
+        } else {
+            progressBar.visibility = View.GONE
             showEmptyState()
         }
+
         binding.exploreButton.setOnClickListener {
             findNavController().popBackStack()
         }

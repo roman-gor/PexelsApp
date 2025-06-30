@@ -51,7 +51,6 @@
         android:text="Name Surname"
         android:textColor="@color/black"
         android:textSize="18sp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.342"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,6 +98,7 @@
         android:text="@string/ResultError"
         android:textColor="@color/black"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,6 +116,7 @@
         android:textAllCaps="false"
         android:textColor="@color/choose"
         android:textSize="18sp"
+        android:visibility="gone"
         app:backgroundTint="#00FFFFFF"
         app:backgroundTintMode="add"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -123,4 +124,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.489" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/choose"
+        android:max="100"
+        android:progress="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phName" />
 </androidx.constraintlayout.widget.ConstraintLayout>
