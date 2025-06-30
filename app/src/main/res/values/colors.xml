@@ -9,7 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main">#F3F5F9</color>
     <color name="choose">#BB1020</color>
-    <color name="colorBackground">#F8F8F8</color>
+    <color name="colorBackground">#FFFFFF</color>
     <color name="colorNavigationPanel">#FFFFFF</color>
     <color name="collectionsText">#1E1E1E</color>
     <color name="searchHintColor">#868686</color>
