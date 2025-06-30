@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackground">#1E1E1E</color>
+    <color name="colorNavigationPanel">#1E1E1E</color>
+    <color name="main">#393939</color>
+    <color name="collectionsText">#FFFFFF</color>
+    <color name="searchHintColor">#B5B5B5</color>
+    <color name="warningText">#FFFFFF</color>
+</resources>

@@ -187,7 +187,7 @@ class HomeFragment : Fragment() {
             title.setOnClickListener {
                 for (btn in titlesList)
                 {
-                    btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                    btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.collectionsText))
                     btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
                 }
                 shouldHandleQueryChange = false
@@ -263,7 +263,7 @@ class HomeFragment : Fragment() {
                     isNew = false
                     for (btn in titlesList)
                     {
-                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                        btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.collectionsText))
                         btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
                     }
                     adapter.clearList()
@@ -277,7 +277,7 @@ class HomeFragment : Fragment() {
                     searchJob = viewLifecycleOwner.lifecycleScope.launch {
                         delay(400L)
                         for (btn in titlesList) {
-                            btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                            btn.setTextColor(ContextCompat.getColor(requireContext(), R.color.collectionsText))
                             btn.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.main)
                         }
                         query = p0

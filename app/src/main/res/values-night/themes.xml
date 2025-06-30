@@ -1,17 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.TestApp_Innowise" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-
+        <item name="colorPrimary">@color/choose</item>
+        <item name="colorPrimaryVariant">@color/choose</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/choose</item>
+        <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
-    </style>
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TestApp_Innowise" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:editTextColor">#FFFFFF</item>
+        <item name="android:textColorHint">#B5B5B5</item>
     </style>
 </resources>

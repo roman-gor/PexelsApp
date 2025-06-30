@@ -47,7 +47,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -65,7 +65,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -83,7 +83,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -101,7 +101,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -119,7 +119,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -137,7 +137,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -156,7 +156,7 @@
                 android:minWidth="0dp"
                 android:text=""
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/collectionsText"
                 app:backgroundTint="@color/main"
                 app:backgroundTintMode="add"
                 app:cornerRadius="20dp" />
@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/mulish_medium"
         android:text="@string/ResultError"
-        android:textColor="@color/black"
+        android:textColor="@color/warningText"
         android:textSize="18sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
