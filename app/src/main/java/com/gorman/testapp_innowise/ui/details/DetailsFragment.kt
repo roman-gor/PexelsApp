@@ -67,8 +67,8 @@ class DetailsFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val photo = arguments?.getParcelable<Photo>("photo", Photo::class.java)
-        val bookmark = arguments?.getParcelable<BookmarkImage>("bookmark", BookmarkImage::class.java)
+        val photo = arguments?.getParcelable<Photo>("photo")
+        val bookmark = arguments?.getParcelable<BookmarkImage>("bookmark")
 
 
         val progressBar = binding.progressBar
