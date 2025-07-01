@@ -29,6 +29,6 @@ Users can search images, download them, and add images to bookmarks.
 
 1. Get your Pexels API key from [Pexels API](https://www.pexels.com/api/)  
 2. Add your API key to `local.properties` in the root of the project:
-PEXELS_API_KEY=Bp5on48mdl079Q514RaE3gxt7uDQUzwSyvel6G8JlbQfqWMQlPM8eldF
+PEXELS_API_KEY=your_api_key
 3. Make sure your device or emulator has internet access  
 4. Build and run the app
