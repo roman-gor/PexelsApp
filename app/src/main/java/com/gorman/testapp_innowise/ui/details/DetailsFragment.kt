@@ -158,7 +158,7 @@ class DetailsFragment : Fragment() {
         lifecycleScope.launch {
             if (photo != null)
             {
-                val exists = detailsViewModel.searchInDBOnce(photo!!.src.large)
+                val exists = detailsViewModel.searchInDBOnce(photo.src.large)
                 if (exists) {
                     binding.likeButton.background = ContextCompat.getDrawable(
                         requireContext(),

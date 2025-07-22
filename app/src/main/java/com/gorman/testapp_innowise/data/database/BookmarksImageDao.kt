@@ -2,7 +2,6 @@ package com.gorman.testapp_innowise.data.database
 
 import androidx.room.*
 import com.gorman.testapp_innowise.data.models.BookmarkImage
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BookmarksImageDao {

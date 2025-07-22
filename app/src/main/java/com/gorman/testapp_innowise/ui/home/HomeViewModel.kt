@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.testapp_innowise.data.models.CollectionItem
 import com.gorman.testapp_innowise.data.models.Photo
-import com.gorman.testapp_innowise.data.repository.PhotoRepository
+import com.gorman.testapp_innowise.data.useCase.GetCuratedPhotosUseCase
+import com.gorman.testapp_innowise.data.useCase.GetFeaturedCollectionsUseCase
+import com.gorman.testapp_innowise.data.useCase.GetPhotosByQueryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +25,9 @@ sealed class LoadResult {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: PhotoRepository,
+    private val getPhotosByQueryUseCase: GetPhotosByQueryUseCase,
+    private val getCuratedPhotosUseCase: GetCuratedPhotosUseCase,
+    private val getFeaturedCollectionsUseCase: GetFeaturedCollectionsUseCase
 ) : ViewModel() {
 
     private val _photos = MutableStateFlow<List<Photo>>(emptyList())
@@ -32,7 +36,7 @@ class HomeViewModel @Inject constructor(
     private val _collections = MutableStateFlow<List<CollectionItem>>(emptyList())
     val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
 
-    private val _isEmpty = MutableStateFlow<Boolean>(false)
+    private val _isEmpty = MutableStateFlow(false)
     val isEmpty: StateFlow<Boolean> = _isEmpty.asStateFlow()
 
     private val _progress = MutableStateFlow(0)
@@ -41,7 +45,7 @@ class HomeViewModel @Inject constructor(
     private val _loadResult = MutableStateFlow<LoadResult>(LoadResult.Success)
     val loadResult: StateFlow<LoadResult> = _loadResult.asStateFlow()
 
-    private var current_page = 1
+    private var currentPage = 1
     private var isLoading = false
     private var allLoading = false
     var selectedFeaturedButton = -1
@@ -52,11 +56,11 @@ class HomeViewModel @Inject constructor(
         isLoading = true
         viewModelScope.launch {
             try {
-                val result = repository.search(query, page = current_page)
+                val result = getPhotosByQueryUseCase(query, page = currentPage)
                 if (result.total_results == 0) {
                     allLoading = true
                 } else {
-                    current_page++
+                    currentPage++
                     _photos.value += result.photos
                 }
             } catch (e: Exception) {
@@ -67,26 +71,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun refresh(query: String)
-    {
-        current_page = 1
-        allLoading = false
-        _photos.value = emptyList()
-        loadNextPage(query)
-    }
-
     fun loadPhotos(query: String)
     {
         _loadResult.value = LoadResult.Loading
         viewModelScope.launch {
             try {
-                current_page = 1
+                currentPage = 1
                 isLoading = false
                 allLoading = false
                 _photos.value = emptyList()
                 loadNextPage(query)
                 Log.d("HomeViewModel", "Запрос отправлен")
-                val result = repository.search(query)
+                val result = getPhotosByQueryUseCase(query)
                 Log.d("HomeViewModel", "Результат: ${result.total_results} коллекций")
                 val total = result.photos.size
                 _loadResult.value = LoadResult.Success
@@ -122,14 +118,14 @@ class HomeViewModel @Inject constructor(
     {
         viewModelScope.launch {
             try {
-                current_page = 1
+                currentPage = 1
                 isLoading = false
                 allLoading = false
                 _photos.value = emptyList()
                 loadNextCuratedPhotos()
                 _loadResult.value = LoadResult.Success
                 Log.d("HomeViewModel", "Запрос отправлен")
-                val result = repository.searchCurated()
+                val result = getCuratedPhotosUseCase()
                 Log.d("HomeViewModel", "Результат: ${result.total_results} коллекций")
                 _photos.value = result.photos
                 val total = result.photos.size
@@ -166,11 +162,11 @@ class HomeViewModel @Inject constructor(
         isLoading = true
         viewModelScope.launch {
             try {
-                val result = repository.searchCurated(page = current_page)
+                val result = getCuratedPhotosUseCase(page = currentPage)
                 if (result.total_results == 0) {
                     allLoading = true
                 } else {
-                    current_page++
+                    currentPage++
                     _photos.value += result.photos
                 }
             } catch (e: Exception) {
@@ -186,7 +182,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _collections.value = emptyList()
-                val result = repository.searchFeaturedCollections()
+                val result = getFeaturedCollectionsUseCase()
                 _collections.value = result
             }
             catch (e: Exception) {

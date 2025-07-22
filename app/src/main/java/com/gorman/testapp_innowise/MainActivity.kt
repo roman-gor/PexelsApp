@@ -2,14 +2,11 @@ package com.gorman.testapp_innowise
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gorman.testapp_innowise.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -19,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import com.gorman.testapp_innowise.ui.home.HomeViewModel
 import com.gorman.testapp_innowise.ui.home.LoadResult
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import androidx.core.app.ActivityCompat
@@ -27,13 +23,11 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var bottomNav: BottomNavigationView
-    private lateinit var indicator: View
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
     private val homeViewModel: HomeViewModel by viewModels()
     private val isLoading = AtomicBoolean(true)
 
@@ -44,6 +38,15 @@ class MainActivity : AppCompatActivity() {
         splashScreen.setKeepOnScreenCondition {
             isLoading.get()
         }
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        initSplashScreenLoading()
+        requestLegacyPermissionsIfNeeded()
+        setupNavigation()
+    }
+
+    private fun initSplashScreenLoading()
+    {
         lifecycleScope.launch {
             homeViewModel.loadResult.collect { loadResult ->
                 when (loadResult) {
@@ -54,10 +57,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        homeViewModel.loadPhotos("nature")
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    }
 
+    private fun requestLegacyPermissionsIfNeeded()
+    {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
@@ -65,26 +68,19 @@ class MainActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1001)
             }
         }
+    }
 
-        bottomNav = binding.navView
-        indicator = binding.indicator
-
+    private fun setupNavigation()
+    {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
-
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home,
-                R.id.navigation_bookmarks
-            )
-        )
         val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         ViewCompat.getWindowInsetsController(window.decorView)?.isAppearanceLightStatusBars =
             nightModeFlags != Configuration.UI_MODE_NIGHT_YES
         binding.navView.setupWithNavController(navController)
 
-        bottomNav.post {
+        binding.navView.post {
             moveIndicatorToIndex(0)
         }
 
@@ -99,6 +95,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveIndicatorToIndex(index: Int) {
+        val bottomNav = binding.navView
+        val indicator = binding.indicator
         val menuView = bottomNav.getChildAt(0) as ViewGroup
         val itemView = menuView.getChildAt(index) ?: return
 
@@ -119,5 +117,10 @@ class MainActivity : AppCompatActivity() {
             .translationX(targetX.toFloat())
             .setDuration(200)
             .start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
