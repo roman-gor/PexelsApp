@@ -1,4 +1,4 @@
-# PexelsApp_Innowise
+# PexelsApp
 
 
 ## Description
