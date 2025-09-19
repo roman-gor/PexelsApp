@@ -3,10 +3,7 @@ package com.gorman.testapp_innowise.ui.bookmarks
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gorman.testapp_innowise.data.models.BookmarkImage
-import com.gorman.testapp_innowise.data.repository.BookmarksRepositoryImpl
 import com.gorman.testapp_innowise.domain.models.Bookmark
-import com.gorman.testapp_innowise.domain.usecases.AddBookmarkUseCase
 import com.gorman.testapp_innowise.domain.usecases.GetAllBookmarksUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -18,8 +15,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
-    private val getAllBookmarksUseCases: GetAllBookmarksUseCases,
-    private val addBookmarkUseCase: AddBookmarkUseCase
+    private val getAllBookmarksUseCases: GetAllBookmarksUseCases
 ) : ViewModel() {
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks: StateFlow<List<Bookmark>> = _bookmarks.asStateFlow()
@@ -55,11 +51,4 @@ class BookmarksViewModel @Inject constructor(
             }
         }
     }
-
-    fun addBookmark(imageUrl: String, name: String) {
-        viewModelScope.launch {
-            addBookmarkUseCase(imageUrl, name)
-        }
-    }
-
 }

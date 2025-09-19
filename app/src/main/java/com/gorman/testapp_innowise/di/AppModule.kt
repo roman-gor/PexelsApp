@@ -23,7 +23,6 @@ import com.gorman.testapp_innowise.domain.repository.PhotoRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 private const val BASE_URL = "https://api.pexels.com/"
-private lateinit var apiKey: String
 
 @Module
 @InstallIn(SingletonComponent::class)
