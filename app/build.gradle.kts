@@ -85,4 +85,5 @@ dependencies {
     testImplementation("androidx.room:room-testing:${room_version}")
     implementation("androidx.room:room-paging:${room_version}")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 }

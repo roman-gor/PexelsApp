@@ -12,30 +12,33 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
 import com.gorman.testapp_innowise.ui.adapters.PhotoAdapter
 import com.gorman.testapp_innowise.R
-import com.gorman.testapp_innowise.data.models.CollectionItem
 import com.gorman.testapp_innowise.databinding.FragmentHomeBinding
+import com.gorman.testapp_innowise.domain.models.Collection
+import com.gorman.testapp_innowise.ui.LoadResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var adapter = PhotoAdapter()
     private var query: String = ""
-    private var collectionList: List<CollectionItem>? = null
+    private var collectionList: List<Collection>? = null
     private var isNew = false
     private var shouldHandleQueryChange = true
     private var searchJob: Job? = null
@@ -46,8 +49,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val homeViewModel: HomeViewModel by viewModels()
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -89,21 +91,25 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.isEmpty.collect { isEmpty ->
-                if (isEmpty) {
-                    showEmptyResult()
-                } else {
-                    showContextView()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.isEmpty.collect { isEmpty ->
+                    if (isEmpty) {
+                        showEmptyResult()
+                    } else {
+                        showContextView()
+                    }
                 }
             }
         }
 
         binding.exploreButton.setOnClickListener {
             homeViewModel.loadCuratedPhotos()
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                homeViewModel.photos.collect { list ->
-                    adapter.appendList(list.takeLast(30))
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    homeViewModel.photos.collect { list ->
+                        adapter.appendList(list.takeLast(30))
+                    }
                 }
             }
             showContextView()
@@ -111,37 +117,53 @@ class HomeFragment : Fragment() {
             searchView.setQuery("", false)
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.loadResult.collect { result ->
-                when (result) {
-                    is LoadResult.Loading -> {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.loadResult.collect { result ->
+                    when (result) {
+                        is LoadResult.Loading -> {}
 
-                    }
-                    is LoadResult.Success -> {
-                        showContextView()
-                    }
-                    is LoadResult.Empty -> {
+                        is LoadResult.Success -> {
+                            showContextView()
+                        }
 
-                    }
-                    is LoadResult.Error -> {
-                        showNetworkError()
-                        when (result.exception) {
-                            is java.net.UnknownHostException,
-                            is java.net.SocketTimeoutException,
-                            is java.io.IOException -> {
-                                Toast.makeText(requireContext(), R.string.NetworkError, Toast.LENGTH_SHORT).show()
-                            }
-                            is retrofit2.HttpException -> {
-                                if (result.exception.code() == 429)
-                                    Toast.makeText(requireContext(), R.string.TooManyRequests, Toast.LENGTH_SHORT).show()
-                                else {
-                                    val code = result.exception.code()
-                                    val text = getString(R.string.ServerError, code)
-                                    Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
+                        is LoadResult.Empty -> {}
+
+                        is LoadResult.Error -> {
+                            showNetworkError()
+                            when (result.exception) {
+                                is java.net.UnknownHostException,
+                                is java.net.SocketTimeoutException,
+                                is java.io.IOException -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.NetworkError,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-                            }
-                            else -> {
-                                Toast.makeText(requireContext(), R.string.UnknownError, Toast.LENGTH_SHORT).show()
+
+                                is retrofit2.HttpException -> {
+                                    if (result.exception.code() == 429)
+                                        Toast.makeText(
+                                            requireContext(),
+                                            R.string.TooManyRequests,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    else {
+                                        val code = result.exception.code()
+                                        val text = getString(R.string.ServerError, code)
+                                        Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+
+                                else -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.UnknownError,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
                     }
@@ -171,17 +193,19 @@ class HomeFragment : Fragment() {
             homeViewModel.loadFeatureCollections()
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.collections.collect { list ->
-                collectionList = list.toList()
-                if (!collectionList.isNullOrEmpty() && collectionList!!.size > 1) {
-                    Log.d("Collections", collectionList!![1].title)
-                    title1.text = collectionList!![1].title
-                    for (i in 0 until 7) {
-                        titlesList[i].text = collectionList!![i].title
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.collections.collect { list ->
+                    collectionList = list.toList()
+                    if (!collectionList.isNullOrEmpty() && collectionList!!.size > 1) {
+                        Log.d("Collections", collectionList!![1].title)
+                        title1.text = collectionList!![1].title
+                        for (i in 0 until 7) {
+                            titlesList[i].text = collectionList!![i].title
+                        }
+                    } else {
+                        Log.d("Collections", "Список пустой или недостаточно элементов")
                     }
-                } else {
-                    Log.d("Collections", "Список пустой или недостаточно элементов")
                 }
             }
         }
@@ -201,10 +225,12 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            homeViewModel.progress.collect { progress ->
-                binding.progressBar.progress = progress
-                binding.progressBar.visibility = if (progress in 1..99) View.VISIBLE else View.GONE
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.progress.collect { progress ->
+                    binding.progressBar.progress = progress
+                    binding.progressBar.visibility = if (progress in 1..99) View.VISIBLE else View.GONE
+                }
             }
         }
 
@@ -214,9 +240,11 @@ class HomeFragment : Fragment() {
             homeViewModel.loadCuratedPhotos()
             if (binding.progressBar.progress != 100)
                 binding.progressBar.visibility = View.VISIBLE
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                homeViewModel.photos.collect { list ->
-                    adapter.appendList(list.takeLast(30))
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    homeViewModel.photos.collect { list ->
+                        adapter.appendList(list.takeLast(30))
+                    }
                 }
             }
         }
@@ -226,17 +254,24 @@ class HomeFragment : Fragment() {
             homeViewModel.loadPhotos(query)
             if (binding.progressBar.progress != 100)
                 binding.progressBar.visibility = View.VISIBLE
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                homeViewModel.photos.collect { list ->
-                    adapter.appendList(list.takeLast(30))
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    homeViewModel.photos.collect { list ->
+                        adapter.appendList(list.takeLast(30))
+                    }
                 }
             }
         }
+        //TODO
         adapter.setOnItemClickListener(object : PhotoAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val photo = adapter.getItem(position)
+                val photoMap = mapOf(
+                    "photographer" to photo.photographer,
+                    "src" to photo.src.original
+                )
                 val bundle = Bundle().apply {
-                    putParcelable("photo", photo)
+                    putString("photoMap", Gson().toJson(photoMap))
                 }
                 findNavController().navigate(R.id.action_HomeFragment_to_DetailsFragment, bundle)
             }
@@ -293,7 +328,7 @@ class HomeFragment : Fragment() {
 
             override fun onQueryTextSubmit(searchQuery: String): Boolean {
                 showContextView()
-                query = searchQuery.trim().orEmpty()
+                query = searchQuery.trim()
                 adapter.clearList()
                 isNew = true
                 homeViewModel.loadPhotos(searchQuery)

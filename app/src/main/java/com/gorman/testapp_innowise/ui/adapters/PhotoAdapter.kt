@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gorman.testapp_innowise.R
-import com.gorman.testapp_innowise.data.models.Photo
+import com.gorman.testapp_innowise.domain.models.Photo
 
 class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
 
@@ -57,7 +57,7 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
     fun getItem(position: Int): Photo = photoList[position]
 
     class PhotoViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
-        private val photoImageView: ImageView = itemView.findViewById<ImageView>(R.id.imageView)
+        private val photoImageView: ImageView = itemView.findViewById(R.id.imageView)
 
         init {
             itemView.setOnClickListener {

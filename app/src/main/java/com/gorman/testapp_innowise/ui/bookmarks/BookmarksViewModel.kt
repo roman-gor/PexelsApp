@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.testapp_innowise.data.models.BookmarkImage
-import com.gorman.testapp_innowise.data.repository.BookmarksRepository
+import com.gorman.testapp_innowise.data.repository.BookmarksRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class BookmarksViewModel @Inject constructor(
-    private val repository: BookmarksRepository
+    private val repository: BookmarksRepositoryImpl
 ) : ViewModel() {
     private val _bookmarks = MutableStateFlow<List<BookmarkImage>>(emptyList())
     val bookmarks: StateFlow<List<BookmarkImage>> = _bookmarks.asStateFlow()

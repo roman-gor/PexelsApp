@@ -1,7 +1,9 @@
 package com.gorman.testapp_innowise.di
 
+import android.content.Context
 import android.util.Log
-import com.gorman.testapp_innowise.data.api.PexelsAPI
+import androidx.room.Room
+import com.gorman.testapp_innowise.data.datasource.remote.PexelsAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,13 +14,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.gorman.testapp_innowise.BuildConfig
+import com.gorman.testapp_innowise.data.datasource.local.AppDatabase
+import com.gorman.testapp_innowise.data.datasource.local.BookmarksImageDao
+import com.gorman.testapp_innowise.data.repository.PhotoRepositoryImpl
+import com.gorman.testapp_innowise.domain.repository.PhotoRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 private const val BASE_URL = "https://api.pexels.com/"
 private lateinit var apiKey: String
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object AppModule {
 
     @Provides
     fun provideApiKey(): String {
@@ -54,4 +61,17 @@ object NetworkModule {
     @Singleton
     fun providePexelsApi(retrofit: Retrofit): PexelsAPI =
         retrofit.create(PexelsAPI::class.java)
+
+    @Provides
+    @Singleton
+    fun providePhotoRepository(api: PexelsAPI): PhotoRepository =
+        PhotoRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, "bookmark_db").build()
+
+    @Provides
+    fun provideDao(db: AppDatabase): BookmarksImageDao = db.bookmarkImageDao()
 }

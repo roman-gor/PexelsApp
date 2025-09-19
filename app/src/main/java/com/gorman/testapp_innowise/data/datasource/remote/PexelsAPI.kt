@@ -1,4 +1,4 @@
-package com.gorman.testapp_innowise.data.api
+package com.gorman.testapp_innowise.data.datasource.remote
 
 import com.gorman.testapp_innowise.data.models.CollectionsResponse
 import com.gorman.testapp_innowise.data.models.PexelsResponse
