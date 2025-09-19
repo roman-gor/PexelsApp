@@ -14,11 +14,11 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.gorman.testapp_innowise.ui.home.HomeViewModel
-import com.gorman.testapp_innowise.ui.home.LoadResult
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import androidx.core.app.ActivityCompat
+import com.gorman.testapp_innowise.ui.LoadResult
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 

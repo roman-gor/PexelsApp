@@ -16,7 +16,9 @@ import javax.inject.Singleton
 import com.gorman.testapp_innowise.BuildConfig
 import com.gorman.testapp_innowise.data.datasource.local.AppDatabase
 import com.gorman.testapp_innowise.data.datasource.local.BookmarksImageDao
+import com.gorman.testapp_innowise.data.repository.BookmarksRepositoryImpl
 import com.gorman.testapp_innowise.data.repository.PhotoRepositoryImpl
+import com.gorman.testapp_innowise.domain.repository.BookmarkRepository
 import com.gorman.testapp_innowise.domain.repository.PhotoRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -69,8 +71,15 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideBookmarkRepository(dao: BookmarksImageDao): BookmarkRepository =
+        BookmarksRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "bookmark_db").build()
+        Room.databaseBuilder(context, AppDatabase::class.java, "bookmark_db")
+            .fallbackToDestructiveMigration(false)
+            .build()
 
     @Provides
     fun provideDao(db: AppDatabase): BookmarksImageDao = db.bookmarkImageDao()

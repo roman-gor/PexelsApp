@@ -11,7 +11,7 @@ interface BookmarksImageDao {
     suspend fun insert(image: BookmarkImage)
 
     @Query("SELECT * FROM bookmarks_images")
-    suspend fun getAll(): Flow<List<BookmarkImage>>
+    fun getAll(): Flow<List<BookmarkImage>>
 
     @Query("SELECT EXISTS(SELECT 1 FROM bookmarks_images WHERE imageUrl = :url)")
     suspend fun existsByUrl(url: String): Boolean
@@ -20,7 +20,7 @@ interface BookmarksImageDao {
     suspend fun deleteByUrl(url: String)
 
     @Query("SELECT * FROM bookmarks_images WHERE id = :imageId LIMIT 1")
-    suspend fun findById(imageId: Int): BookmarkImage
+    suspend fun findById(imageId: Int): BookmarkImage?
 
     @Delete
     suspend fun delete(image: BookmarkImage)

@@ -18,7 +18,7 @@ class BookmarksRepositoryImpl @Inject constructor(
         dao.insert(BookmarkImage(imageUrl = url, phName = name))
     }
 
-    override suspend fun getAllImages(): Flow<List<Bookmark>> {
+    override fun getAllImages(): Flow<List<Bookmark>> {
         return dao.getAll().map { list -> list.map { it.toDomain() } }
     }
 
@@ -28,7 +28,7 @@ class BookmarksRepositoryImpl @Inject constructor(
         dao.deleteByUrl(url)
     }
 
-    override suspend fun findImageById(imageId: Int): Bookmark {
-        return dao.findById(imageId).toDomain()
+    override suspend fun findImageById(imageId: Int): Bookmark? {
+        return dao.findById(imageId)?.toDomain()
     }
 }

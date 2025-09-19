@@ -1,5 +1,6 @@
 package com.gorman.testapp_innowise.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,22 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gorman.testapp_innowise.R
-import com.gorman.testapp_innowise.data.models.BookmarkImage
+import com.gorman.testapp_innowise.domain.models.Bookmark
 
 class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHolder>() {
 
-    private val bookmarksList = mutableListOf<BookmarkImage>()
+    private val bookmarksList = mutableListOf<Bookmark>()
     private var listener: OnItemClickListener? = null
 
-    fun setList(newList: List<BookmarkImage>) {
+    @SuppressLint("NotifyDataSetChanged")
+    fun setList(newList: List<Bookmark>) {
         bookmarksList.clear()
         bookmarksList.addAll(newList)
-        notifyDataSetChanged()
-    }
-
-    fun clearList()
-    {
-        bookmarksList.clear()
         notifyDataSetChanged()
     }
 
@@ -49,11 +45,11 @@ class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHold
 
     override fun getItemCount(): Int = bookmarksList.size
 
-    fun getItem(position: Int): BookmarkImage = bookmarksList[position]
+    fun getItem(position: Int): Bookmark = bookmarksList[position]
 
     class BookmarksViewHolder(itemView: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder (itemView) {
-        private val bookmarkImageView: ImageView = itemView.findViewById<ImageView>(R.id.bookmarkView)
-        private val phName: TextView = itemView.findViewById<TextView>(R.id.phName)
+        private val bookmarkImageView: ImageView = itemView.findViewById(R.id.bookmarkView)
+        private val phName: TextView = itemView.findViewById(R.id.phName)
 
         init {
             itemView.setOnClickListener {
@@ -64,7 +60,7 @@ class BookmarksAdapter : RecyclerView.Adapter<BookmarksAdapter.BookmarksViewHold
             }
         }
 
-        fun bind(bookmark: BookmarkImage) {
+        fun bind(bookmark: Bookmark) {
             Glide.with(itemView.context)
                 .load(bookmark.imageUrl)
                 .placeholder(R.drawable.img_placeholder)

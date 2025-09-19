@@ -26,6 +26,7 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
         notifyItemRangeInserted(start, filteredList.size)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun clearList()
     {
         photoList.clear()

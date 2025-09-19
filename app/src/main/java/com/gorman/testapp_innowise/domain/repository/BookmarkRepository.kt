@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface BookmarkRepository {
     suspend fun insertImage(url: String, name: String)
-    suspend fun getAllImages(): Flow<List<Bookmark>>
+    fun getAllImages(): Flow<List<Bookmark>>
     suspend fun isImage(url: String): Boolean
     suspend fun deleteByUrl(url: String)
-    suspend fun findImageById(imageId: Int): Bookmark
+    suspend fun findImageById(imageId: Int): Bookmark?
 }

@@ -22,43 +22,56 @@ class BookmarksFragment : Fragment() {
 
     private var _binding: FragmentBookmarksBinding? = null
     private val binding get() = _binding!!
+    private val bookmarksViewModel: BookmarksViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val bookmarksViewModel: BookmarksViewModel by viewModels()
 
         _binding = FragmentBookmarksBinding.inflate(inflater, container, false)
 
+        setupRecyclerView()
+        setupObservers()
+        setupClickListeners()
+
+        bookmarksViewModel.loadBookmarks()
+        return binding.root
+    }
+
+    private fun setupRecyclerView() {
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         val adapter = BookmarksAdapter()
+        binding.bookmarksImgView.layoutManager = layoutManager
         binding.bookmarksImgView.adapter = adapter
 
-        binding.bookmarksImgView.layoutManager = layoutManager
-        bookmarksViewModel.loadBookmarks()
         adapter.setOnItemClickListener(object : BookmarksAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
                 val bookmark = adapter.getItem(position)
                 val bundle = Bundle().apply {
-                    putParcelable("bookmark", bookmark)
+                    putInt("bookmarkId", bookmark.id!!)
                 }
-                findNavController().navigate(R.id.action_BookmarksFragment_to_DetailsFragment, bundle)
+                findNavController().navigate(
+                    R.id.action_BookmarksFragment_to_DetailsFragment,
+                    bundle
+                )
             }
         })
+    }
+
+    private fun setupObservers() {
+        val adapter = binding.bookmarksImgView.adapter as BookmarksAdapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 bookmarksViewModel.bookmarks.collect { list ->
-                    if(list.isNotEmpty())
-                    {
+                    if (list.isNotEmpty()) {
                         adapter.setList(list.takeLast(30))
                         binding.exploreButton3.visibility = View.GONE
                         binding.nothingSaveText.visibility = View.GONE
                         binding.bookmarksImgView.visibility = View.VISIBLE
-                    }
-                    else
-                    {
+                    } else {
                         binding.exploreButton3.visibility = View.VISIBLE
                         binding.nothingSaveText.visibility = View.VISIBLE
                         binding.bookmarksImgView.visibility = View.GONE
@@ -74,12 +87,12 @@ class BookmarksFragment : Fragment() {
                     if (progress in 1..99) View.VISIBLE else View.GONE
             }
         }
+    }
 
+    private fun setupClickListeners() {
         binding.exploreButton3.setOnClickListener {
             findNavController().navigate(R.id.action_BookmarksFragment_to_HomeFragment)
         }
-        val root: View = binding.root
-        return root
     }
 
     override fun onDestroyView() {
