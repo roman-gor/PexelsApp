@@ -1,6 +1,5 @@
-# PexelsApp_Innowise
+# PexelsApp
 
-This is a test assignment project for internship.
 
 ## Description
 
@@ -20,7 +19,7 @@ Users can search images, download them, and add images to bookmarks.
 - XML layouts  
 - MVVM architecture  
 - Hilt for dependency injection  
-- Room for local database (favorites)  
+- Room for local database (favourites)  
 - Retrofit for networking  
 - Coroutines & Flow for asynchronous operations  
 - Glide for image loading and caching
