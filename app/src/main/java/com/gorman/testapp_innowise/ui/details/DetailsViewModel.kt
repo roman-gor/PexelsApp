@@ -1,20 +1,17 @@
 package com.gorman.testapp_innowise.ui.details
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.gorman.testapp_innowise.data.models.BookmarkImage
-import com.gorman.testapp_innowise.data.repository.BookmarksRepository
+import com.gorman.testapp_innowise.domain.repository.BookmarkRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-    private val repository: BookmarksRepository
+    private val repository: BookmarkRepository
 ) : ViewModel() {
     private val _bookmarks = MutableStateFlow<List<BookmarkImage>>(emptyList())
     val bookmarks: StateFlow<List<BookmarkImage>> = _bookmarks.asStateFlow()

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gorman.testapp_innowise.data.models.BookmarkImage
 import com.gorman.testapp_innowise.data.repository.BookmarksRepositoryImpl
+import com.gorman.testapp_innowise.domain.models.Bookmark
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.delay
@@ -17,10 +18,10 @@ import kotlinx.coroutines.launch
 class BookmarksViewModel @Inject constructor(
     private val repository: BookmarksRepositoryImpl
 ) : ViewModel() {
-    private val _bookmarks = MutableStateFlow<List<BookmarkImage>>(emptyList())
-    val bookmarks: StateFlow<List<BookmarkImage>> = _bookmarks.asStateFlow()
+    private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
+    val bookmarks: StateFlow<List<Bookmark>> = _bookmarks.asStateFlow()
 
-    private val _bookmarksProgress = MutableStateFlow<Int>(0)
+    private val _bookmarksProgress = MutableStateFlow(0)
     val bookmarksProgress = _bookmarksProgress.asStateFlow()
 
     fun loadBookmarks() {
@@ -35,7 +36,7 @@ class BookmarksViewModel @Inject constructor(
                         _bookmarksProgress.value = 100
                         return@collect
                     }
-                    val loaded = mutableListOf<BookmarkImage>()
+                    val loaded = mutableListOf<Bookmark>()
 
                     for ((index, bookmark) in list.withIndex()){
                         delay(30L)
