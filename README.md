@@ -26,7 +26,7 @@ Users can search images, download them, and add images to bookmarks.
 
 ## Дизайн
 <p align="center">
-  <img src="screenshots/pexels_collage.png" width="800"/>
+  <img src="screenshots/pexels_design.png" width="800"/>
 </p>
 
 ## Setup
