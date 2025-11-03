@@ -24,6 +24,11 @@ Users can search images, download them, and add images to bookmarks.
 - Coroutines & Flow for asynchronous operations  
 - Glide for image loading and caching
 
+## Дизайн
+<p align="center">
+  <img src="screenshots/pexels_collage.png" width="800"/>
+</p>
+
 ## Setup
 
 1. Get your Pexels API key from [Pexels API](https://www.pexels.com/api/)  
